@@ -24,7 +24,7 @@ def addNewKeysInJson( fileName, keysMap):
                 if rowNumber == 0:
                     rowNumber += 1
                     continue
-                print("Row Number : ", rowNumber, " | Value : ", row);
+                print("Row Number : ", rowNumber, " | Value : ", row[0]," : ",row[1]);
                 updatekey(jsonContent,row[0].split("."),row[1]);
                 rowNumber += 1
 
