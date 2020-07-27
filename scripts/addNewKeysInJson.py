@@ -3,9 +3,10 @@ import json
 import csv
 from collections import OrderedDict
 
-sourceJsonFile = "D:\\Codebase\\UHG\\minerva-customizations\\mphrx-angular\\themes\\languages\\en.json"
-outputPath = "D:\\Codebase\\UHG\\minerva-customizations\\mphrx-angular\\themes\\languages\\"
+sourceJsonFile = "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\en.json"
+outputPath = "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\"
 csvFileName = "translation.csv"
+newValuesInRow = 1
 
 masterMap = {
 
@@ -24,8 +25,8 @@ def addNewKeysInJson( fileName, keysMap):
                 if rowNumber == 0:
                     rowNumber += 1
                     continue
-                print("Row Number : ", rowNumber, " | Value : ", row[0]," : ",row[1]);
-                updatekey(jsonContent,row[0].split("."),row[1]);
+                print("Row Number : ", rowNumber, " | Value : ", row[0]," : ",row[newValuesInRow]);
+                updatekey(jsonContent,row[0].split("."),row[newValuesInRow]);
                 rowNumber += 1
 
     with io.open(fileName, 'w', encoding='utf8') as f:

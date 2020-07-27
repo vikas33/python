@@ -21,7 +21,7 @@ def main():
     oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "old.json";
     newFileDir = str(sys.argv[5]) if len(sys.argv) > 5 else "new.json";
     outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "output\\";
-    isDiffRequired = True;
+    isDiffRequired = 2; # 0 = no diff required, 1 = new keys diff, 2 = get diff of existing keys also where value is updated
 
     if custId:
         if not os.path.exists(outputDir):
@@ -57,9 +57,11 @@ def mergeUtility(lang, backupDir, oldFileDir, newFileDir, outputDir, isDiffRequi
 
             if os.path.exists(newFile) :
                 outputFile = outputDir + fileName;
+
+                if isDiffRequired != 0:
+                    findDiff(outputDir,fileName,newFile,file, isDiffRequired);
                 mergeFiles(newFile, file, outputFile);
-                if isDiffRequired:
-                    findDiff(outputDir,fileName,file);
+
 
             else :
                 logging.info("No file found for update with name : "+newFile);
@@ -113,9 +115,8 @@ def backupFile(dir,files):
     logging.info("Backup has been created for following file at directory : "+ dir);
     logging.info(files);
 
-def findDiff(outputDir,fileName,oldFile):
+def findDiff(outputDir,fileName,newFile,oldFile,isDiffRequired):
     diffFile = outputDir + "diff_"+fileName.split('.')[0]+".csv";
-    newFile = outputDir + fileName;
 
     with io.open(newFile, encoding='utf8') as fileObj:
         a = flatten_json(json.load(fileObj));
@@ -125,7 +126,7 @@ def findDiff(outputDir,fileName,oldFile):
 
     with io.open(diffFile, 'w', encoding = 'utf8') as f:
         f.write('"KEY","Value"\n');
-        for key in [comm for comm in a if not (comm in b)]:
+        for key in [comm for comm in a if (not (comm in b) or (isDiffRequired == 2 and b[comm] != a[comm] ))]:
             f.write('"'+key+'","'+a[key]+'"\n');
 
 

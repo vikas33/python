@@ -13,10 +13,10 @@ def main():
 
     custId = str(sys.argv[1]) if len(sys.argv) > 1 else "Test";
     lang = str(sys.argv[2]) if len(sys.argv) > 2 else "en";
-    backupDir = str(sys.argv[3]) if len(sys.argv) > 3 else "D:\\Codebase\\UHG\\minerva-customizations\\mphrx-angular\\themes\\languages\\backup\\";
-    oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "D:\\Codebase\\UHG\\minerva-customizations\\mphrx-angular\\themes\\languages\\en.json";
+    backupDir = str(sys.argv[3]) if len(sys.argv) > 3 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\backup\\";
+    oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\ml.json";
     newFileDir = str(sys.argv[5]) if len(sys.argv) > 5 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\en.json";
-    outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "D:\\Codebase\\UHG\\minerva-customizations\\mphrx-angular\\themes\\languages\\output\\";
+    outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\output\\";
     isDiffRequired = True;
 
     if custId:
