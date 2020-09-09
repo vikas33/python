@@ -1,39 +1,15 @@
-triggerNameMapping = {
-    "Appointment_CREATE_PrescriptionUpload_ReminderNotification.groovy" :"AppointmentManagement_PrescriptionUploadReminder_Appointment_CREATE.groovy",
-    "Appointment_UpdateNotification.groovy" :"AppointmentManagement_MultipleUseCasesOnStatusUpdate_Appointment_UPDATE.groovy",
-    "AppointmentBookingMailToAdmin.groovy" :"AppointmentManagement_BookingMailToAdmin_Appointment_CREATE.groovy",
-    "AppointmentCreate_PhlebotomistInAppMessage.groovy" :"AppointmentManagement_PhlebotomistInAppMessage_Appointment_CREATE.groovy",
-    "AppointmentCreate_PhlebotomistPushMessage.groovy" :"AppointmentManagement_PhlebotomistPushMessage_Appointment_CREATE.groovy",
-    "AppointmentCreate_PhlebotomistSMSMessage.groovy" :"AppointmentManagement_PhlebotomistSMSMessage_Appointment_CREATE.groovy",
-    "AppointmentCreateOrProposed_PatientInAppMessage.groovy" :"AppointmentManagement_PatientInAppMessageOnProposed_Appointment_CREATE.groovy",
-    "AppointmentCreateOrProposed_PatientMobilePush.groovy" :"AppointmentManagement_PatientMobilePushOnProposed_Appointment_CREATE.groovy",
-    "AppointmentCreateOrProposed_PatientSMSMessage.groovy" :"AppointmentManagement_PatientSMSMessageOnProposed_Appointment_CREATE.groovy",
-    "AppointmentStatusChange_PatientInApp.groovy" :"AppointmentManagement_PatientInAppMessageOnStatusChange_Appointment_UPDATE.groovy",
-    "AppointmentStatusChange_PatientMobilePush.groovy" :"AppointmentManagement_PatientMobilePushOnStatusChange_Appointment_UPDATE.groovy",
-    "AppointmentStatusChange_PatientSMSMessage.groovy" :"AppointmentManagement_PatientSMSMessageOnStatusChange_Appointment_UPDATE.groovy",
-    "AppointmentUpdate_PhlebotomistInAppMessage_ReassignedPreviousPhlebotomist.groovy" :"AppointmentManagement_PhlebotomistInAppMessageWhenReassignedPreviousPhlebotomist_Appointment_UPDATE.groovy",
-    "AppointmentUpdate_PhlebotomistInAppMessageToCurrentPhlebotomist.groovy" :"AppointmentManagement_PhlebotomistInAppMessageToCurrentPhlebotomist_Appointment_UPDATE.groovy",
-    "AppointmentUpdate_PhlebotomistPushMessage_ReassignedPreviousPhlebotomist.groovy" :"AppointmentManagement_PhlebotomistPushMessageWhenReassignedPreviousPhlebotomist_Appointment_UPDATE.groovy",
-    "AppointmentUpdate_PhlebotomistPushMessageToCurrentPhlebotomist.groovy" :"AppointmentManagement_PhlebotomistPushMessageToCurrentPhlebotomist_Appointment_UPDATE.groovy",
-    "AppointmentUpdate_PhlebotomistSMSMessage_ReassignedPreviousPhlebotomist.groovy" :"AppointmentManagement_PhlebotomistSMSMessageWhenReassignedPreviousPhlebotomist_Appointment_UPDATE.groovy",
-    "AppointmentUpdate_PhlebotomistSMSMessageToCurrentPhlebotomist.groovy" :"AppointmentManagement_PhlebotomistSMSMessageToCurrentPhlebotomist_Appointment_UPDATE.groovy",
-    "CancelAppointentPaymentRefund.groovy" :"AppointmentManagement_CancelAppointentPaymentRefund_Appointment_UPDATE.groovy",
-    "Consent_Save.groovy" :"ConsentManagement_SaveConsent_Consent_CREATE.groovy",
-    "Consent_Update.groovy" :"ConsentManagement_UpdateConsent_Consent_UPDATE.groovy",
-    "DiagnosticReport_Available_Update.groovy" :"ReportManagement_DiagnosticReportAvailable_DiagnosticReport_UPDATE.groovy",
-    "EPrescriptionAlertTriggerPush.groovy" :"ReportManagement_EPrescriptionAlertTriggerPush_DiagnosticOrder_UPDATE.groovy",
-    "EPrescriptionInAppTrigger.groovy" :"ReportManagement_EPrescriptionInAppTrigger_DiagnosticOrder_UPDATE.groovy",
-    "EPrescriptionSMS.groovy" :"ReportManagement_EPrescriptionSMS_DiagnosticOrder_UPDATE.groovy",
-    "OrderSharingMailToInternalRecipient.groovy" :"OrderSharing_OrderSharingMailToInternalRecipient_Sharing_CREATE.groovy",
-    "OrderSharingMailToOwner.groovy" :"OrderSharing_OrderSharingMailToOwner_Sharing_CREATE.groovy",
-    "OrderSharingNotificationToOwner.groovy" :"OrderSharing_OrderSharingNotificationToOwner_Sharing_CREATE.groovy",
-    "OrderSharingNotificationToRecipient.groovy" :"OrderSharing_OrderSharingNotificationToRecipient_Sharing_CREATE.groovy",
-    "PatientConsentApproveorRejectTrigger.groovy" :"ConsentManagement_PatientConsentApproveorReject_WorkflowRequest_UPDATE.groovy",
-    "PatientProfileUpdated.groovy" :"PatientManagement_PatientProfileUpdated_Patient_UPDATE.groovy",
-    "RatingBelowFiveNotification.groovy" :"AppointmentManagement_RatingBelowFive_AppointmentFeedback_CREATE.groovy",
-    "RatingBelowFiveNotification_Update.groovy" :"AppointmentManagement_RatingBelowFive_AppointmentFeedback_UPDATE.groovy",
-    "reminderPushCreate.groovy" :"AppointmentManagement_ReminderPush_Appointment_CREATE.groovy",
-    "reminderPushUpdate.groovy" :"AppointmentManagement_ReminderPush_Appointment_UPDATE.groovy",
-    "SlotDelete.groovy" :"AppointmentManagement_SlotDelete_Slot_DELETE.groovy",
-    "UserCreationAndSMSNotification.groovy" :"UserManagement_UserCreationAndSMSNotification_QuestionnaireResponse_UPDATE.groovy"
-}
+triggerNameMapping = [
+
+    {
+        "condition": "import consus.resources.DiagnosticOrderResource\n\n/*\n * Checks for order status and makes it not visible whenever it's Cancelled.\n*/\n\nprop = new Properties()\n//Value is then retrieved from properties file\ndebug = false\ntriggerName = \"***** ORDER CREATE - CHECK CANCELLED STATUS (Condition Code): \"\n\n/*\n * Logs entries according to the level provided.\n */\ndef logme(String entry, String level = \"info\") {\n    switch(level) {\n        case \"info\":\n            log.info(triggerName + entry)\n            break\n        case \"error\":\n            log.error(triggerName + entry)\n            break\n        case \"warning\":\n            log.warning(triggerName + entry)\n            break\n        case \"debug\":\n            log.debug(triggerName + entry)\n            break\n        default:\n            log.info(triggerName + entry)\n    }\n}\n\n\n/*\n * Loads properties file from path provided as argument.\n * If not provided, a default path is used.\n * If properties cannot be loaded, prop is null.\n */\ndef loadProp(String propFilePath = null, Properties prop) {\n\tif(propFilePath == null)\n\t\tpropFilePath = \"/etc/customer/icas.properties\"\n\ttry {\n\t\tInputStream input = new FileInputStream(propFilePath)\n\t\tprop.load(input)\n\t\tString sDebug = prop.getProperty(\"debug\")\n\t\tlogme(\"Debug level from properties file ${propFilePath}: ${sDebug}\", \"info\")\n\n\t\tif(sDebug)\n\t\t\tdebug = Boolean.parseBoolean(sDebug)\n\t\tif(debug)\n\t\t\tlogme(\"Properties: \" + prop, \"info\")\n\n\t} catch (IOException ex) {\n\t\tex.printStackTrace();\n\t\tprop = null\n\t}\n}\n\nlogme(\"Condition code start\", \"info\")\nloadProp(prop)\nlogme(\"Debug: ${debug}\", \"info\")\n\nif(debug)\n\tlogme(\"inputMap.obj: \" + inputMap.obj)\n\nhideOrder = prop.getProperty(\"hideCanceledOrders\")\nif(hideOrder && hideOrder.trim().length() > 0) {\n    bHideOrder = Boolean.parseBoolean(hideOrder)\n    if(bHideOrder) {\n        logme(\"Cancelled orders to be hidden, going ahead with action code\", \"info\")\n        returnMap.runTrigger = true\n        return\n    }\n} else {\n    logme(\"Cannot retrieve any information on property file\", \"info\")\n    logme(\"Trigger will not run\", \"info\")\n    returnMap.runTrigger = false\n    return\n}",
+        "actionCode": "import consus.resources.DiagnosticOrderResource\n\n/*\n * Checks for order status and makes it not visible whenever it's Cancelled.\n*/\n\nprop = new Properties()\n//Value is then retrieved from properties file\ndebug = false\ntriggerName = \"***** ORDER CREATE - CHECK CANCELLED STATUS (Action Code): \"\n\n/*\n * Logs entries according to the level provided.\n */\ndef logme(String entry, String level = \"info\") {\n    switch(level) {\n        case \"info\":\n            log.info(triggerName + entry)\n            break\n        case \"error\":\n            log.error(triggerName + entry)\n            break\n        case \"warning\":\n            log.warning(triggerName + entry)\n            break\n        case \"debug\":\n            log.debug(triggerName + entry)\n            break\n        default:\n            log.info(triggerName + entry)\n    }\n}\n\n\n/*\n * Loads properties file from path provided as argument.\n * If not provided, a default path is used.\n * If properties cannot be loaded, prop is null.\n */\ndef loadProp(String propFilePath = null, Properties prop) {\n\tif(propFilePath == null)\n\t\tpropFilePath = \"/etc/customer/icas.properties\"\n\ttry {\n\t\tInputStream input = new FileInputStream(propFilePath)\n\t\tprop.load(input)\n\t\tString sDebug = prop.getProperty(\"debug\")\n\t\tlogme(\"Debug level from properties file ${propFilePath}: ${sDebug}\", \"info\")\n\n\t\tif(sDebug)\n\t\t\tdebug = Boolean.parseBoolean(sDebug)\n\t\tif(debug)\n\t\t\tlogme(\"Properties: \" + prop, \"info\")\n\n\t} catch (IOException ex) {\n\t\tex.printStackTrace();\n\t\tprop = null\n\t}\n}\n\nlogme(\"Action code start\", \"info\")\nloadProp(prop)\nlogme(\"Debug: ${debug}\", \"info\")\n\nif(debug)\n\tlogme(\"inputMap.obj: \" + inputMap.obj)\n\nDiagnosticOrderResource dor = new DiagnosticOrderResource().getPersistedObject(inputMap.obj.id)\nif(dor) {\n    logme(\"Order retrieved. going to check the status...\", \"info\")\n    logme(\"Order status: \" + dor.status?.value)\n    if(dor.status?.value == \"Cancelled\" || dor.status?.value == \"Canceled\") {\n        logme(\"Order is canceled and must be hidden\", \"info\")\n        dor.globalVisible = false\n        if(dor.update()) {\n            logme(\"Order updated, no more visible\", \"info\")\n            returnMap.triggerSuccess = true\n            return\n        } else {\n            logme(\"Cannot update the order !!!\", \"info\")\n            returnMap.triggerSuccess = false\n            return\n        }\n    } else {\n        logme(\"Order status is not Cancelled or Canceled, nothing to do\", \"info\")\n        returnMap.triggerSuccess = true\n        return\n    }\n} else {\n    logme(\"Cannot retrieve order data\", \"info\")\n    returnMap.triggerSuccess = false\n    return\n}",
+        "enabled": True,
+        "triggerName": "[Agfa Triggers 2.0] Hide canceled order",
+        "triggerType": "CREATE",
+        "description": "[Agfa Triggers 2.0] Hide canceled order",
+        "triggerResource": "DiagnosticOrder"
+    }
+
+]
+
+

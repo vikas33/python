@@ -16,7 +16,7 @@ def main():
 
     isDiffRequired = False;
     custId = str(sys.argv[1]) if len(sys.argv) > 1 else "Test";
-    lang = str(sys.argv[2]) if len(sys.argv) > 2 else "";
+    lang = str(sys.argv[2]) if len(sys.argv) > 2 else "en";
 
     # backupDir = str(sys.argv[3]) if len(sys.argv) > 3 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\backup\\";
     # oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\it.json";
@@ -24,9 +24,9 @@ def main():
     # outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\output\\";
 
     backupDir = str(sys.argv[3]) if len(sys.argv) > 3 else "/tmp/themes_languages/backup/";
-    oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "/opt/mphrx/" + custId + "/apps/angular/angular/themes/languages2/";
+    oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "/opt/mphrx/" + custId + "/apps/angular/angular/themes/languages/";
     newFileDir = str(sys.argv[5]) if len(sys.argv) > 5 else "/opt/mphrx/" + custId + "/apps/angular/angular/webconnect/languages/";
-    outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "/opt/mphrx/" + custId + "/apps/angular/angular/themes/languages2/";
+    outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "/opt/mphrx/" + custId + "/apps/angular/angular/themes/languages/";
 
     if custId:
         if not os.path.exists(outputDir):
