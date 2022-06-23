@@ -21,7 +21,7 @@ def main():
     oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "old.json";
     newFileDir = str(sys.argv[5]) if len(sys.argv) > 5 else "new.json";
     outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "output\\";
-    isDiffRequired = True;
+    isDiffRequired = 2; # 0 = no diff required, 1 = new keys diff, 2 = get diff of existing keys also where value is updated
 
     if custId:
         if not os.path.exists(outputDir):
@@ -57,9 +57,11 @@ def mergeUtility(lang, backupDir, oldFileDir, newFileDir, outputDir, isDiffRequi
 
             if os.path.exists(newFile) :
                 outputFile = outputDir + fileName;
+
+                if isDiffRequired != 0:
+                    findDiff(outputDir,fileName,newFile,file, isDiffRequired);
                 mergeFiles(newFile, file, outputFile);
-                if isDiffRequired:
-                    findDiff(outputDir,fileName,file);
+
 
             else :
                 logging.info("No file found for update with name : "+newFile);
@@ -67,6 +69,16 @@ def mergeUtility(lang, backupDir, oldFileDir, newFileDir, outputDir, isDiffRequi
 
     else:
         logging.info("No file found with name : "+lang)
+
+def compareKeysFormat(old,cmpFrom,completeKey=""):
+    for k,v in old.items():
+        #print(type(old.get(k)),k,type(cmpFrom.get(k)) is OrderedDict)
+        if k not in cmpFrom:
+            logging.info("UNABLE_TO_COMPARE | Key removed in new file : "+ completeKey+"."+k)
+        elif type(old.get(k)) != type(cmpFrom.get(k)):
+            logging.error("DATA_TYPE_MISMATCH | can cause problem in merge : "+completeKey+"."+k);
+        elif type(old.get(k)) is OrderedDict:
+            compareKeysFormat(old.get(k),cmpFrom.get(k),(completeKey+"."+k) if completeKey else k)
 
 
 def mergeFiles(newFile, oldFile, outputFile) :
@@ -79,6 +91,9 @@ def mergeFiles(newFile, oldFile, outputFile) :
         with io.open(oldFile, encoding='utf8') as data_file2:
             content2 = json.load(data_file2, object_pairs_hook=OrderedDict);
 
+        logging.info("\n\n\n++++++++ MERGING VALIDATION CHECK +++++++++++++");
+        compareKeysFormat(content2, content1)
+        logging.info("++++++++ MERGING VALIDATION ENDS +++++++++++++\n\n\n")
         output = merge(content1, content2);
         #content1.update(content2)
 
@@ -100,9 +115,8 @@ def backupFile(dir,files):
     logging.info("Backup has been created for following file at directory : "+ dir);
     logging.info(files);
 
-def findDiff(outputDir,fileName,oldFile):
-    diffFile = outputDir + "diff_"+fileName;
-    newFile = outputDir + fileName;
+def findDiff(outputDir,fileName,newFile,oldFile,isDiffRequired):
+    diffFile = outputDir + "diff_"+fileName.split('.')[0]+".csv";
 
     with io.open(newFile, encoding='utf8') as fileObj:
         a = flatten_json(json.load(fileObj));
@@ -111,8 +125,9 @@ def findDiff(outputDir,fileName,oldFile):
         b = flatten_json(json.load(fileObj));
 
     with io.open(diffFile, 'w', encoding = 'utf8') as f:
-        for key in [comm for comm in a if not (comm in b)]:
-            f.write(key+" : "+a[key]+"\n");
+        f.write('"KEY","Value"\n');
+        for key in [comm for comm in a if (not (comm in b) or (isDiffRequired == 2 and b[comm] != a[comm] ))]:
+            f.write('"'+key+'","'+a[key]+'"\n');
 
 
 def getFiles(dirPath, ext):

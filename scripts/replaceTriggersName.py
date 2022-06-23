@@ -1,6 +1,9 @@
 import os
 import re
-from master_maps import triggerNameMapping;
+#from master_maps import triggerNameMapping;
+triggerNameMapping = {
+    "Appointment_CREATE_PrescriptionUpload_ReminderNotification.groovy" :"AppointmentManagement_PrescriptionUploadReminder_Appointment_CREATE.groovy",
+}
 
 filePath = "D:\\testingFolder"
 entryFile = "D:\\testingFolder\\Entries.txt"

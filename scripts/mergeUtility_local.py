@@ -8,23 +8,40 @@ from collections import OrderedDict
 
 #1. CUSTID, 2. Langauge file Name 3. backup Path 4. oldFile path, 5. newFile Path 6. output Path
 
+fileSeprator = "\\"
+
 def main():
     print("**MERGE UTILITY BEGINS**\n");
 
+    isDiffRequired = True;
     custId = str(sys.argv[1]) if len(sys.argv) > 1 else "Test";
     lang = str(sys.argv[2]) if len(sys.argv) > 2 else "en";
-    backupDir = str(sys.argv[3]) if len(sys.argv) > 3 else "D:\\Codebase\\UHG\\minerva-customizations\\mphrx-angular\\themes\\languages\\backup\\";
-    oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "D:\\Codebase\\UHG\\minerva-customizations\\mphrx-angular\\themes\\languages\\en.json";
-    newFileDir = str(sys.argv[5]) if len(sys.argv) > 5 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\en.json";
-    outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "D:\\Codebase\\UHG\\minerva-customizations\\mphrx-angular\\themes\\languages\\output\\";
-    isDiffRequired = True;
 
+    backupDir = str(sys.argv[3]) if len(sys.argv) > 3 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\backup\\";
+    oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\it.json";
+    newFileDir = str(sys.argv[5]) if len(sys.argv) > 5 else "D:\\Codebase\\UHG\\minerva-customizations\\mphrx-angular\\themes\\languages\\en.json";
+    outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "D:\\Codebase\\minerva-customizations\\mphrx-angular\\themes\\languages\\output\\";
+
+    # backupDir = str(sys.argv[3]) if len(sys.argv) > 3 else "/tmp/themes_languages/backup/";
+    # oldFileDir = str(sys.argv[4]) if len(sys.argv) > 4 else "/opt/mphrx/"+custId+"/apps/angular/angular/themes/languages/";
+    # newFileDir = str(sys.argv[5]) if len(sys.argv) > 5 else "/opt/mphrx/"+custId+"/apps/angular/angular/webconnect/languages/";
+    # outputDir = str(sys.argv[6]) if len(sys.argv) > 6 else "/opt/mphrx/"+custId+"/apps/angular/angular/themes/languages/";
+    #
     if custId:
         if not os.path.exists(outputDir):
             os.makedirs(outputDir);
         if os.path.exists(oldFileDir) and os.path.exists(newFileDir) :
-            mergeUtility(lang+".json", backupDir, oldFileDir, newFileDir, outputDir,isDiffRequired);
-            mergeUtility(lang+"_signup.json", backupDir, oldFileDir, newFileDir, outputDir,isDiffRequired);
+            if lang != "":
+                mergeUtility(lang+".json", backupDir, oldFileDir, newFileDir, outputDir,isDiffRequired);
+                mergeUtility(lang+"_signup.json", backupDir, oldFileDir, newFileDir, outputDir,isDiffRequired);
+            else:
+                langFiles = getFiles(oldFileDir, ".json",False);
+                if len(langFiles):
+                    for file in langFiles:
+                        mergeUtility(file, backupDir, oldFileDir, newFileDir, outputDir, isDiffRequired);
+                else:
+                    print("No file found to merge at path: " + oldFileDir);
+
             print("Please find merged file at : "+ outputDir)
         else:
             print("Unable to find directory : "+newFileDir+" or "+oldFileDir);
@@ -49,9 +66,9 @@ def mergeUtility(lang, backupDir, oldFileDir, newFileDir, outputDir, isDiffRequi
 
             if newFileDir[-5:] == ".json":
                 newFile = newFileDir;
-                fileName = file.rsplit("\\", 1)[-1];
+                fileName = file.rsplit(fileSeprator, 1)[-1];
             else:
-                fileName = file.rsplit("\\", 1)[-1];
+                fileName = file.rsplit(fileSeprator, 1)[-1];
                 newFile = newFileDir + fileName;
 
             if os.path.exists(newFile) :
@@ -114,14 +131,17 @@ def findDiff(outputDir,fileName,oldFile):
             f.write(key+" : "+a[key]+"\n");
 
 
-def getFiles(dirPath, ext):
+def getFiles(dirPath, ext, appendPath = True):
     fileList = [];
     # r=root, d=directories, f = files
     if dirPath[-5:] != ".json":
         for r, d, f in os.walk(dirPath):
             for file in f:
-                if file == ext:
+                if appendPath and file == ext:
                     fileList.append(os.path.join(r, file));
+                elif (not appendPath) and file[-len(ext):] == ext:
+                    fileList.append(file);
+
     else:
         fileList.append(dirPath)
     return fileList;
